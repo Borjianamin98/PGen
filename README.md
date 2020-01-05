@@ -13,8 +13,11 @@ Following prerequisites are required, depending on your usage.
 
 #### Java
 
-To execute this project you need Java JDK. This program written with JavaFX. JavaFX removed after version 8 of java so
-use only java 8 for execution of program. If you use linux, `openjdk-8-jdk` removed JavaFX and you must use oracle version of java.
+To execute this project you are going to need Java JDK, which you can install via the following command, if you are on a Linux machine.
+
+```
+sudo apt install openjdk-11-jdk
+```
 
 #### Maven
 
@@ -24,22 +27,12 @@ You are going to need Maven only if you are compiling from source. You can insta
 sudo apt install maven
 ```
 
-### Compilation
+### Compilation and Execution
 
-You can compile the code via the following command.
-
-```
-mvn package
-```
-
-The result of compilation is a `.jar` file, that you can find in the `target` director. The file is going to be named `PGen-*.*-jar-with-dependencies.jar` where the `*.*` is going to be the version of the binary.
-
-### Execution
-
-You can run the executable with the following command.
+You can compile and run the code via the following command.
 
 ```
-java -jar target/PGen-*.*-jar-with-dependencies.jar
+mvn clean javafx:run
 ```
 
 ### Usage
