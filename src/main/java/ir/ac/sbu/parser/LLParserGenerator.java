@@ -66,6 +66,8 @@ public class LLParserGenerator {
                 .filter(graphModel -> nullableNodes.contains(graphModel.getStart().getId()))
                 .map(GraphModel::getName)
                 .collect(Collectors.toSet());
+
+        getTableString(30); //for finaly checking for errors
     }
 
     private void checkEdges() throws TableException {
