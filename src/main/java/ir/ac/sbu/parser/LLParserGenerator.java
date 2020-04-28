@@ -13,6 +13,7 @@ import javafx.util.Pair;
 import ir.ac.sbu.model.EdgeModel;
 import ir.ac.sbu.model.GraphModel;
 import ir.ac.sbu.model.NodeModel;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -404,18 +405,31 @@ public class LLParserGenerator {
         return nullableNodes;
     }
 
-    private Map<Integer, Set<String>> getTotalFirstSets() {
+    private Map<Integer, Set<String>> getTotalFirstSets() throws TableException {
         Map<Integer, Set<String>> firsts = new HashMap<>();
         Set<Integer> visited = new HashSet<>();
-        for (NodeModel nodeModel : allNodes) {
-            calculateFirstSet(firsts, visited, nodeModel);
+        try {
+            for (NodeModel nodeModel : allNodes) {
+                calculateFirstSet(firsts, visited, nodeModel);
+            }
+            return firsts;
+        } catch (TableException e) {
+            // First element is message title and others are path in DFS search.
+            throw new TableException(
+                    e.getMessages().get(0) + e.getMessages().subList(1, e.getMessages().size()));
         }
-        return firsts;
     }
 
-    private Set<String> calculateFirstSet(Map<Integer, Set<String>> firstSets, Set<Integer> visited, NodeModel nodeModel) {
+    private Set<String> calculateFirstSet(Map<Integer, Set<String>> firstSets, Set<Integer> visited,
+            NodeModel nodeModel) throws TableException {
         if (visited.contains(nodeModel.getId())) {
-            return firstSets.get(nodeModel.getId());
+            Set<String> lastCalculatedFirstSet = firstSets.get(nodeModel.getId());
+            if (lastCalculatedFirstSet == null) {
+                // We use DFS to calculate first sets. If in DFS tree, node 'A' was children of itself directly
+                // or indirectly, it means we can move in 'A' infinitely.
+                throw new TableException(nodeModel.getGraph() + " graph call itself recursively: ");
+            }
+            return lastCalculatedFirstSet;
         }
         visited.add(nodeModel.getId());
         Set<String> firstOfCurrentNode = new HashSet<>();
@@ -428,9 +442,15 @@ public class LLParserGenerator {
          */
         for (EdgeModel edgeModel : nodeModel.getAdjacent()) {
             if (edgeModel.isGraph()) {
-                Set<String> firstSetOfGraph = calculateFirstSet(firstSets, visited,
-                        variableGraph.get(edgeModel.getToken()).getStart());
-                firstOfCurrentNode.addAll(firstSetOfGraph);
+                try {
+                    Set<String> firstSetOfGraph = calculateFirstSet(firstSets, visited,
+                            variableGraph.get(edgeModel.getToken()).getStart());
+                    firstOfCurrentNode.addAll(firstSetOfGraph);
+                } catch (TableException e) {
+                    // Add illegal graph to message list
+                    e.getMessages().add(nodeModel.getGraph().toString());
+                    throw e;
+                }
                 if (nullableVariables.contains(edgeModel.getToken()) &&
                         edgeModel.getEnd().getId() != nodeModel.getId()) {
                     Set<String> firstSetOfRestOfGraph = calculateFirstSet(firstSets, visited,

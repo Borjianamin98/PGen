@@ -63,7 +63,11 @@ public class DialogUtility {
     }
 
     public static void showErrorDialog(String message) {
-        Dialog<ButtonType> dialog = CustomDialogWithLabel("Result", "assets/dialog/Error.png", ButtonType.OK);
+        showErrorDialog("Error", message);
+    }
+
+    public static void showErrorDialog(String title, String message) {
+        Dialog<ButtonType> dialog = CustomDialogWithLabel(title, "assets/dialog/Error.png", ButtonType.OK);
         setContent(dialog, new Label(message));
         dialog.showAndWait();
     }

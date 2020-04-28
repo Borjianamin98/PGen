@@ -233,6 +233,9 @@ public class MainController {
             DialogUtility.showSuccessDialog("There is no problem!");
         } catch (TableException e) {
             DialogUtility.showErrorDialog(e.getMessages());
+        } catch (Exception e) {
+            DialogUtility.showErrorDialog(String.format("Unhandled exception happened %s.\nPlease send your " +
+                    "PGen file to us. Thanks.", e.toString()));
         }
     }
 
@@ -247,6 +250,9 @@ public class MainController {
             }
         } catch (TableException e) {
             DialogUtility.showErrorDialog(e.getMessages());
+        } catch (Exception e) {
+            DialogUtility.showErrorDialog(String.format("Unhandled exception happened %s.\nPlease send your " +
+                    "PGen file to us. Thanks.", e.toString()));
         }
     }
 
@@ -261,6 +267,9 @@ public class MainController {
             }
         } catch (TableException e) {
             DialogUtility.showErrorDialog(e.getMessages());
+        } catch (Exception e) {
+            DialogUtility.showErrorDialog(String.format("Unhandled exception happened %s.\nPlease send your " +
+                    "PGen file to us. Thanks.", e.toString()));
         }
     }
 
@@ -275,6 +284,9 @@ public class MainController {
             }
         } catch (TableException e) {
             DialogUtility.showErrorDialog(e.getMessages());
+        } catch (Exception e) {
+            DialogUtility.showErrorDialog(String.format("Unhandled exception happened %s.\nPlease send your " +
+                    "PGen file to us. Thanks.", e.toString()));
         }
     }
 
@@ -309,7 +321,10 @@ public class MainController {
         } catch (TableException e) {
             DialogUtility.showErrorDialog(e.getMessages());
         } catch (IOException e) {
-            DialogUtility.showErrorDialog(e.getMessage());
+            DialogUtility.showErrorDialog("Exception during exporting files", e.getMessage());
+        } catch (Exception e) {
+            DialogUtility.showErrorDialog(String.format("Unhandled exception happened %s.\nPlease send your " +
+                    "PGen file to us. Thanks.", e.toString()));
         }
     }
 
