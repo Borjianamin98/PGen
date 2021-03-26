@@ -1,5 +1,6 @@
 package ir.ac.sbu.utility;
 
+import ir.ac.sbu.utility.chooser.*;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -8,8 +9,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -37,20 +36,23 @@ public class DialogUtility {
     }
 
     public static File showSaveDialog(Window owner, String title, String... extensions) {
-        SingletonFileChooser.setExtensions(extensions);
-        SingletonFileChooser.setTitle(title);
-        return SingletonFileChooser.showSaveDialog(owner);
+        return SingletonFileChooser.getInstance()
+                .setExtensions(extensions)
+                .setTitle(title)
+                .showSaveDialog(owner);
     }
 
     public static File showOpenDialog(Window owner, String... extensions) {
-        SingletonFileChooser.setExtensions(extensions);
-        SingletonFileChooser.setTitle("Open a File");
-        return SingletonFileChooser.showOpenDialog(owner);
+        return SingletonFileChooser.getInstance()
+                .setExtensions(extensions)
+                .setTitle("Open a File")
+                .showOpenDialog(owner);
     }
 
     public static File showDirectoryDialog(Window owner) {
-        SingletonDirectoryChooser.setTitle("Select a directory");
-        return SingletonDirectoryChooser.showDialog(owner);
+        return SingletonDirectoryChooser.getInstance()
+                .setTitle("Select a directory")
+                .showDialog(owner);
     }
 
     public static void showSuccessDialog(String message) {
