@@ -440,7 +440,7 @@ public class MainController {
                 // but then close the opened window without selecting any path or without pressing any buttons.
                 // In this case, the person has practically given up and we do not want to close the program,
                 // so we check whether the user has actually saved the file or not.
-                || (result.get().equals(ButtonType.YES) && fileSave(null))) {
+                || (result.get().equals(ButtonType.YES) && !fileSave(null))) {
             event.consume();
             return;
         }
