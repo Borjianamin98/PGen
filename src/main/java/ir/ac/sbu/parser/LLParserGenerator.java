@@ -26,7 +26,6 @@ public class LLParserGenerator {
     private static final int eofTokenId = 0;
 
     private List<GraphModel> graphs;
-    private Set<String> tokens;
     private Set<String> variables;
     private Set<String> nullableVariables;
     private Set<Integer> nullableNodes;
@@ -40,21 +39,7 @@ public class LLParserGenerator {
         this.graphs = graphs;
         checkGraphs(graphs);
 
-        tokens = graphs.stream()
-                .flatMap(graph -> graph.getEdges().stream())
-                .filter(edge -> !edge.isGraph())
-                .map(EdgeModel::getToken)
-                .collect(Collectors.toSet());
-
-        variables = graphs.stream()
-                .flatMap(graph -> graph.getEdges().stream())
-                .filter(EdgeModel::isGraph)
-                .map(EdgeModel::getToken).collect(Collectors.toSet());
-        Set<String> graphNames = graphs.stream().map(GraphModel::getName).collect(Collectors.toSet());
-        variables.addAll(graphNames);
-
-        // check tokens and variables before continue
-        checkTokens();
+        extractTokens();
 
         variableGraph = graphs.stream().collect(Collectors.toMap(GraphModel::getName, Function.identity(), (o, v) -> o));
         allNodes = graphs.stream().flatMap(graphModel -> graphModel.getNodes().stream())
@@ -95,24 +80,31 @@ public class LLParserGenerator {
         }
     }
 
-    private void checkTokens() throws TableException {
+    private void extractTokens() throws TableException {
         List<String> messages = new ArrayList<>();
-        for (GraphModel graphModel : graphs) {
-            for (EdgeModel edgeModel : graphModel.getEdges()) {
-                try {
-                    CheckUtility.checkEmptyTokenName(edgeModel.getToken(), edgeModel.getStart().getId(), edgeModel.getEnd().getId());
-                } catch (IllegalArgumentException e) {
-                    messages.add(e.getMessage());
-                }
-            }
-        }
 
+        List<EdgeModel> edges = graphs.stream()
+                .flatMap(graph -> graph.getEdges().stream())
+                .collect(Collectors.toList());
+
+        variables = graphs.stream().map(GraphModel::getName).collect(Collectors.toSet());
         tokenAsInt = new HashMap<>();
         tokenAsInt.put("$", eofTokenId);
         int tokenUID = 1;
-        for (String token : tokens) {
-            tokenAsInt.put(token, tokenUID);
-            tokenUID++;
+        for (EdgeModel edge : edges) {
+            String token = edge.getToken();
+            if (edge.isGraph()) {
+                variables.add(token);
+            } else {
+                try {
+                    CheckUtility.checkTokenName(token);
+                } catch (IllegalArgumentException e) {
+                    messages.add(String.format("Invalid token: start-node = %s end-node = %s error = %s",
+                            edge.getStart().getId(), edge.getEnd().getId(), e.getMessage()));
+                }
+                tokenAsInt.put(token, tokenUID);
+                tokenUID++;
+            }
         }
 
         for (String variable : variables) {

@@ -26,19 +26,6 @@ public class CheckUtility {
         }
     }
 
-    public static void checkEmptyTokenName(String tokenName, int startNodeId, int endNodeId) {
-        String tokenCanNotBeEmptyStr = "Token can not be empty with start node " + startNodeId + " and end node " + endNodeId;
-        if (tokenName == null) {
-            throw new IllegalArgumentException(tokenCanNotBeEmptyStr);
-        } else if (tokenName.startsWith("$")) {
-            throw new IllegalArgumentException("All string starting with $ are predefined tokens.");
-        } else if (tokenName.trim().isEmpty()) {
-            throw new IllegalArgumentException(tokenCanNotBeEmptyStr);
-        } else if (tokenName.contains(DELIMITER)) {
-            throw new IllegalArgumentException("Token can not contain '" + DELIMITER + "' character.");
-        }
-    }
-
     public static void checkFunctionName(String functionName) {
         if (functionName.contains(DELIMITER)) {
             throw new IllegalArgumentException("Token can not contain '" + DELIMITER + "' character.");
