@@ -13,7 +13,7 @@ import ir.ac.sbu.model.GraphModel;
 import ir.ac.sbu.model.NodeModel;
 
 public class DrawPaneController implements RefreshableController {
-    private Pane pane;
+    private final Pane pane;
     private GraphModel graph;
     private NodeModel firstNode = null;
 
@@ -23,6 +23,9 @@ public class DrawPaneController implements RefreshableController {
     }
 
     public void refresh() {
+        if (graph == null) {
+            return; // Not initialized yet.
+        }
         pane.getChildren().clear();
 
         for (NodeModel nodeModel : graph.getNodes()) {
@@ -42,11 +45,9 @@ public class DrawPaneController implements RefreshableController {
 
     private void onShiftClick(MouseEvent mouseEvent) {
         NodeModel node = ((GraphNode) mouseEvent.getSource()).getNodeModel();
-        if (firstNode == null)
-            firstNode = node;
-        else {
-            CommandManager.getInstance().applyCommand( new MakeEdgeCmd(firstNode, node));
-            firstNode = node;
+        firstNode = node;
+        if (firstNode != null) {
+            CommandManager.getInstance().applyCommand(new MakeEdgeCmd(firstNode, node));
         }
     }
 

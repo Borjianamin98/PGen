@@ -12,6 +12,7 @@ import ir.ac.sbu.utility.CheckUtility;
 import ir.ac.sbu.utility.DialogUtility;
 import ir.ac.sbu.utility.GenerateUID;
 import ir.ac.sbu.utility.ResourceUtility;
+import java.io.FileNotFoundException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -357,9 +358,16 @@ public class MainController {
     private void fileOpen(ActionEvent actionEvent) {
         File selectedFile = DialogUtility.showOpenDialog(pane.getScene().getWindow(), "*.pgs");
         if (selectedFile != null) {
-            SaveLoadService exportService = new SaveLoadService(selectedFile);
-            exportService.load(graphList);
-            drawPaneController.setGraph(graphList.getItems().get(0));
+            List<GraphModel> graphList;
+            try {
+                graphList = SaveLoadService.load(selectedFile);
+            } catch (FileNotFoundException e) {
+                DialogUtility.showErrorDialog("Unable to find file: " + selectedFile.getPath(), e.toString());
+                return;
+            }
+
+            drawPaneController.setGraph(graphList.get(0));
+            graphs.setAll(graphList);
             drawPaneController.refresh();
             lastChosenFileForSave = selectedFile;
         }
@@ -386,8 +394,7 @@ public class MainController {
 
     private void saveGraphs(File file) {
         parserRenumber(null);
-        SaveLoadService exportService = new SaveLoadService(file);
-        exportService.save(graphs);
+        SaveLoadService.save(graphs, file);
     }
 
     public void helpAbout(ActionEvent actionEvent) {

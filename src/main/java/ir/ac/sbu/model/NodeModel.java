@@ -1,18 +1,21 @@
 package ir.ac.sbu.model;
 
-import javafx.beans.property.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
 public class NodeModel {
+
     private int id;
-    private DoubleProperty x;
-    private DoubleProperty y;
+    private final DoubleProperty x;
+    private final DoubleProperty y;
     private GraphModel graph;
 
-    private BooleanProperty finalNode;
-    private BooleanProperty startNode;
+    private final BooleanProperty finalNode;
+    private final BooleanProperty startNode;
     private List<EdgeModel> adjacent;
 
     public NodeModel(double x, double y, GraphModel graph, int id) {
