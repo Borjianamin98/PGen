@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import ir.ac.sbu.command.ChangeEdgeCmd;
 import ir.ac.sbu.command.CommandManager;
@@ -35,6 +37,16 @@ public class EdgePropertiesController {
     }
 
     public void apply(ActionEvent actionEvent) {
+        applyFunc();
+    }
+
+    public void applyWithEnterKey(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            applyFunc();
+        }
+    }
+
+    private void applyFunc() {
         try {
             CheckUtility.checkTokenName(tokenText.getText());
             CheckUtility.checkFunctionName(funcText.getText());
