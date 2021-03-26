@@ -89,7 +89,6 @@ public class MainController {
     // Last file which is used for saving PGEN file will be stored to used for later save in applications
     // It will be used when open a file too.
     private File lastChosenFileForSave = null;
-    private WindowEvent windowEvent;
 
     @FXML
     private void initialize() {
@@ -208,7 +207,7 @@ public class MainController {
         helpManualMenuItem.setOnAction(this::helpManual);
         addGraphBtn.setOnAction(this::addGraph);
 
-        setOnCloseRequest();
+        Main.getPrimaryStage().setOnCloseRequest(this::setOnCloseRequest);
     }
 
     public void addGraph(ActionEvent actionEvent) {
@@ -366,32 +365,23 @@ public class MainController {
         }
     }
 
-    private void fileSave(ActionEvent actionEvent) {
-        _fileSave();
-    }
-
-    private void fileSaveAs(ActionEvent actionEvent) {
-        _fileSaveAs();
-    }
-
-    private void _fileSave() {
+    private boolean fileSave(ActionEvent actionEvent) {
         if (lastChosenFileForSave != null) {
             saveGraphs(lastChosenFileForSave);
+            return true;
         } else {
-            _fileSaveAs();
+            return fileSaveAs(actionEvent);
         }
     }
 
-    private void _fileSaveAs() {
+    private boolean fileSaveAs(ActionEvent actionEvent) {
         File selectedFile = DialogUtility.showSaveDialog(pane.getScene().getWindow(), "Save PGen File", "*.pgs");
         if (selectedFile != null) {
             lastChosenFileForSave = selectedFile;
             saveGraphs(lastChosenFileForSave);
-        } else {
-            if (windowEvent != null) {
-                windowEvent.consume();
-            }
+            return true;
         }
+        return false;
     }
 
     private void saveGraphs(File file) {
@@ -441,26 +431,20 @@ public class MainController {
         }
     }
 
-    private void setOnCloseRequest() {
-        Main.getPrimaryStage().setOnCloseRequest(event -> {
-            windowEvent = event;
-            String dialogString = lastChosenFileForSave != null ? "Do you want to save changes?" : "Do you want to save changes to a file?";
-            Optional<ButtonType> result = DialogUtility.showConfirmationDialog("PGEN", dialogString);
-            if (!result.isPresent()) {
-                return;
-            }
-            ButtonType selectedButton = result.get();
-            if (selectedButton.equals(ButtonType.YES)) {
-                _fileSave();
-            }
-            if (selectedButton.equals(ButtonType.YES) || selectedButton.equals(ButtonType.NO)) {
-                if (!windowEvent.isConsumed()) {
-                    Platform.exit();
-                    System.exit(0);
-                }
-            } else if (selectedButton.equals(ButtonType.CANCEL)) {
-                windowEvent.consume();
-            }
-        });
+    private void setOnCloseRequest(WindowEvent event) {
+        String dialogString = lastChosenFileForSave != null ? "Do you want to save changes?" : "Do you want to save changes to a file?";
+        Optional<ButtonType> result = DialogUtility.showConfirmationDialog("PGEN", dialogString);
+        if (!result.isPresent() || result.get().equals(ButtonType.CANCEL)
+                // Although we have considered the user to cancel after the dialog is displayed,
+                // the user may select the "YES" option at first,
+                // but then close the opened window without selecting any path or without pressing any buttons.
+                // In this case, the person has practically given up and we do not want to close the program,
+                // so we check whether the user has actually saved the file or not.
+                || (result.get().equals(ButtonType.YES) && fileSave(null))) {
+            event.consume();
+            return;
+        }
+        Platform.exit();
+        System.exit(0);
     }
 }
