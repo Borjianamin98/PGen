@@ -30,7 +30,7 @@ public class GraphModel {
             nodeModel.setFinalNode(node.isFinalNode());
             nodeModel.setStartNode(node.isStartNode());
             if (node.isStartNode()) {
-                graphModel.start = node;
+                graphModel.start = nodeModel;
             }
             graphModel.nodes.add(nodeModel);
         }
