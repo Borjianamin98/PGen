@@ -56,5 +56,6 @@ Right Click on edge's name for deleting or changing parameteres.
 * **Hosein Ghahremanzadeh** - [github](https://github.com/IYP-Programer-Yeah)
 * **Ali Shamakhi** - [github](https://github.com/ali-shamakhi)
 * **Amin Borjian** - [github](https://github.com/Borjianamin98)
+* **Hamid Montazeri** - [github](https://github.com/hamidhandid)
 
-See also the list of [contributors](https://github.com/IYP-Programer-Yeah/PGen/graphs/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/Borjianamin98/PGen/graphs/contributors) who participated in this project.
