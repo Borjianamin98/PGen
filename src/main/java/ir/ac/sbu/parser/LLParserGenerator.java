@@ -97,17 +97,22 @@ public class LLParserGenerator {
 
     private void checkTokens() throws TableException {
         List<String> messages = new ArrayList<>();
+        for (GraphModel graphModel : graphs) {
+            for (EdgeModel edgeModel : graphModel.getEdges()) {
+                try {
+                    CheckUtility.checkEmptyTokenName(edgeModel.getToken(), edgeModel.getStart().getId(), edgeModel.getEnd().getId());
+                } catch (IllegalArgumentException e) {
+                    messages.add(e.getMessage());
+                }
+            }
+        }
+
         tokenAsInt = new HashMap<>();
         tokenAsInt.put("$", eofTokenId);
         int tokenUID = 1;
         for (String token : tokens) {
-            try {
-                CheckUtility.checkTokenName(token);
-                tokenAsInt.put(token, tokenUID);
-                tokenUID++;
-            } catch (IllegalArgumentException e) {
-                messages.add(e.getMessage());
-            }
+            tokenAsInt.put(token, tokenUID);
+            tokenUID++;
         }
 
         for (String variable : variables) {
