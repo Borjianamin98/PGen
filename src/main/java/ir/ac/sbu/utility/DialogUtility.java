@@ -37,23 +37,20 @@ public class DialogUtility {
     }
 
     public static File showSaveDialog(Window owner, String title, String... extensions) {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle(title);
-        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("extensions", extensions));
-        return chooser.showSaveDialog(owner);
+        SingletonFileChooser.setExtensions(extensions);
+        SingletonFileChooser.setTitle(title);
+        return SingletonFileChooser.showSaveDialog(owner);
     }
 
     public static File showOpenDialog(Window owner, String... extensions) {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Open a File");
-        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("extensions", extensions));
-        return chooser.showOpenDialog(owner);
+        SingletonFileChooser.setExtensions(extensions);
+        SingletonFileChooser.setTitle("Open a File");
+        return SingletonFileChooser.showOpenDialog(owner);
     }
 
     public static File showDirectoryDialog(Window owner) {
-        DirectoryChooser chooser = new DirectoryChooser();
-        chooser.setTitle("Select a directory");
-        return chooser.showDialog(owner);
+        SingletonDirectoryChooser.setTitle("Select a directory");
+        return SingletonDirectoryChooser.showDialog(owner);
     }
 
     public static void showSuccessDialog(String message) {
