@@ -9,20 +9,25 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    private static Stage primaryStage;
+
+    public static Stage getPrimaryStage() {
+        return primaryStage;
+    }
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage stage) throws Exception {
+        primaryStage = stage;
         Parent root = FXMLLoader.load(ResourceUtility.getResource("fxml/Main.fxml"));
-        primaryStage.setTitle("PGen");
-        primaryStage.getIcons().add(new Image(ResourceUtility.getResourceAsStream("assets/Icon.png")));
-
-        primaryStage.setScene(createScene(root));
-        primaryStage.setMaximized(true);
-        primaryStage.show();
+        getPrimaryStage().setTitle("PGen");
+        getPrimaryStage().getIcons().add(new Image(ResourceUtility.getResourceAsStream("assets/Icon.png")));
+        getPrimaryStage().setScene(createScene(root));
+        getPrimaryStage().setMaximized(true);
+        getPrimaryStage().show();
     }
 
     private static Scene createScene(Parent root) {

@@ -1,5 +1,6 @@
 package ir.ac.sbu.controller;
 
+import ir.ac.sbu.Main;
 import ir.ac.sbu.command.CommandManager;
 import ir.ac.sbu.exception.TableException;
 import ir.ac.sbu.model.GraphModel;
@@ -11,6 +12,7 @@ import ir.ac.sbu.utility.CheckUtility;
 import ir.ac.sbu.utility.DialogUtility;
 import ir.ac.sbu.utility.GenerateUID;
 import ir.ac.sbu.utility.ResourceUtility;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,12 +28,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -84,6 +89,7 @@ public class MainController {
     // Last file which is used for saving PGEN file will be stored to used for later save in applications
     // It will be used when open a file too.
     private File lastChosenFileForSave = null;
+    private WindowEvent windowEvent;
 
     @FXML
     private void initialize() {
@@ -201,6 +207,8 @@ public class MainController {
         helpLicenseMenuItem.setOnAction(this::helpLicense);
         helpManualMenuItem.setOnAction(this::helpManual);
         addGraphBtn.setOnAction(this::addGraph);
+
+        setOnCloseRequest();
     }
 
     public void addGraph(ActionEvent actionEvent) {
@@ -329,7 +337,8 @@ public class MainController {
     }
 
     private void fileNew(ActionEvent actionEvent) {
-        Optional<ButtonType> result = DialogUtility.showConfirmationDialog("PGEN", "Do you want to save changes to a file?");
+        String dialogString = lastChosenFileForSave != null ? "Do you want to save changes?" : "Do you want to save changes to a file?";
+        Optional<ButtonType> result = DialogUtility.showConfirmationDialog("PGEN", dialogString);
         if (!result.isPresent() || result.get().equals(ButtonType.CANCEL)) {
             return;
         }
@@ -358,18 +367,30 @@ public class MainController {
     }
 
     private void fileSave(ActionEvent actionEvent) {
-        if (lastChosenFileForSave != null) {
-            saveGraphs(lastChosenFileForSave);
-        } else {
-            fileSaveAs(actionEvent);
-        }
+        _fileSave();
     }
 
     private void fileSaveAs(ActionEvent actionEvent) {
+        _fileSaveAs();
+    }
+
+    private void _fileSave() {
+        if (lastChosenFileForSave != null) {
+            saveGraphs(lastChosenFileForSave);
+        } else {
+            _fileSaveAs();
+        }
+    }
+
+    private void _fileSaveAs() {
         File selectedFile = DialogUtility.showSaveDialog(pane.getScene().getWindow(), "Save PGen File", "*.pgs");
         if (selectedFile != null) {
             lastChosenFileForSave = selectedFile;
             saveGraphs(lastChosenFileForSave);
+        } else {
+            if (windowEvent != null) {
+                windowEvent.consume();
+            }
         }
     }
 
@@ -418,5 +439,28 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setOnCloseRequest() {
+        Main.getPrimaryStage().setOnCloseRequest(event -> {
+            windowEvent = event;
+            String dialogString = lastChosenFileForSave != null ? "Do you want to save changes?" : "Do you want to save changes to a file?";
+            Optional<ButtonType> result = DialogUtility.showConfirmationDialog("PGEN", dialogString);
+            if (!result.isPresent()) {
+                return;
+            }
+            ButtonType selectedButton = result.get();
+            if (selectedButton.equals(ButtonType.YES)) {
+                _fileSave();
+            }
+            if (selectedButton.equals(ButtonType.YES) || selectedButton.equals(ButtonType.NO)) {
+                if (!windowEvent.isConsumed()) {
+                    Platform.exit();
+                    System.exit(0);
+                }
+            } else if (selectedButton.equals(ButtonType.CANCEL)) {
+                windowEvent.consume();
+            }
+        });
     }
 }
