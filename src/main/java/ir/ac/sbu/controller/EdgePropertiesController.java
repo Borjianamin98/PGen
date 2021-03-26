@@ -37,16 +37,16 @@ public class EdgePropertiesController {
     }
 
     public void apply(ActionEvent actionEvent) {
-        applyFunc();
+        applyChanges();
     }
 
-    public void applyWithEnterKey(KeyEvent keyEvent) {
+    public void handleKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-            applyFunc();
+            applyChanges();
         }
     }
 
-    private void applyFunc() {
+    private void applyChanges() {
         try {
             CheckUtility.checkTokenName(tokenText.getText());
             CheckUtility.checkFunctionName(funcText.getText());

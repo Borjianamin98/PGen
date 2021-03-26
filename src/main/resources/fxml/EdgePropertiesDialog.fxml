@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.ac.sbu.controller.EdgePropertiesController">
+<GridPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.ac.sbu.controller.EdgePropertiesController" onKeyPressed="#handleKeyPressed">
     <columnConstraints>
         <ColumnConstraints fillWidth="false" hgrow="NEVER" />
         <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
@@ -25,20 +25,20 @@
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
     <Label text="Token" />
-    <TextField fx:id="tokenText" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" onKeyPressed="#applyWithEnterKey">
+    <TextField fx:id="tokenText" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
     </TextField>
-    <CheckBox fx:id="graphChk" mnemonicParsing="false" text="Graph" GridPane.columnIndex="2" onKeyPressed="#applyWithEnterKey"/>
+    <CheckBox fx:id="graphChk" mnemonicParsing="false" text="Graph" GridPane.columnIndex="2"/>
     <Label text="Function" GridPane.rowIndex="1" />
-    <TextField fx:id="funcText" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" onKeyPressed="#applyWithEnterKey">
+    <TextField fx:id="funcText" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
     </TextField>
-    <CheckBox fx:id="globalChk" mnemonicParsing="false" text="Global" GridPane.columnIndex="2" GridPane.rowIndex="1" onKeyPressed="#applyWithEnterKey"/>
-    <Button fx:id="applyBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#apply" onKeyPressed="#applyWithEnterKey" text="Apply" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+    <CheckBox fx:id="globalChk" mnemonicParsing="false" text="Global" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+    <Button fx:id="applyBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#apply" text="Apply" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
         <GridPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
         </GridPane.margin>
